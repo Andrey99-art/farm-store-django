@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load custom_filters %} 
+
+{% block title %}Оформление Заказа - Продукты из Деревни{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Оформление Заказа</h2>
+
+    {% if cart %}
+        <div class="card shadow-sm p-4">
+            <h3>Ваш заказ:</h3>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Продукт</th>
+                            <th class="text-center">Кол-во</th>
+                            <th class="text-end">Цена за ед.</th>
+                            <th class="text-end">Всего</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-end">{{ item.price }} руб.</td>
+                                <td class="text-end">{{ item.total_price }} руб.</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="fw-bold">
+                            <td colspan="3" class="text-end">Итого:</td>
+                            <td class="text-end text-success fs-5">{{ cart.get_total_price }} руб.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr class="my-4">
+
+            <h3>Ваши контактные данные:</h3>
+            <form action="{% url 'products:order_checkout' %}" method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3"> {# mb-3 для отступа между полями #}
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field|add_class:"form-control" }} {# Добавляем класс Bootstrap к полю формы #}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="invalid-feedback d-block"> {# d-block, чтобы ошибки всегда были видны #}
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                
+                <button type="submit" class="btn btn-success btn-lg mt-4">Подтвердить заказ</button>
+            </form>
+
+            <p class="mt-4 text-muted">После подтверждения заказа, я свяжусь с вами для уточнения деталей и организации доставки/оплаты.</p>
+        </div>
+    {% else %}
+        <p class="alert alert-info">Ваша корзина пуста. Нечего оформлять.</p>
+        <p class="mt-4">
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary">Начать покупки</a>
+        </p>
+    {% endif %}
+{% endblock %}

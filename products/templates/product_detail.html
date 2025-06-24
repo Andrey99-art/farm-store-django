@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block seo_title %}{{ product.name }} - {% trans "купить в магазине" %} {% trans "Продукты из Деревни" %}{% endblock %}
+{% block seo_description %}{{ product.description|truncatechars:160 }}{% endblock %}
+{% block seo_keywords %}{{ product.name }}, {{ block.super }}{% endblock %}
+
+{% block content %}
+    <p class="mb-3">
+        <a href="{% url 'products:product_list' %}" class="btn btn-secondary btn-sm">
+            « {% trans "Назад к продуктам" %}
+        </a>
+    </p>
+
+    <div class="card shadow-sm">
+        <div class="row g-0">
+            <div class="col-md-5">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/600x450?text={% trans 'Нет фото' %}" class="img-fluid rounded-start" alt="{% trans 'Нет фото' %}">
+                {% endif %}
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h1 class="card-title">{{ product.name }}</h1>
+                    {% if product.price %}
+                        <p class="card-text fs-4 fw-bold text-success">{% trans "Цена" %}: {{ product.price }} {% trans "руб." %} / {{ product.get_unit_display }}</p>
+                    {% else %}
+                        <p class="card-text fs-5 text-primary">{% trans "Цену уточняйте при заказе" %}</p>
+                    {% endif %}
+                    <p class="card-text">{{ product.description|linebreaksbr }}</p>
+
+                    <h3 class="mt-4">{% trans "Добавить в корзину" %}:</h3>
+                    <form action="{% url 'products:cart_add' product.id %}" method="post" class="row g-3 align-items-end">
+                        {% csrf_token %}
+                        <div class="col-auto">
+                            <label for="{{ cart_product_form.quantity.id_for_label }}" class="form-label">
+                                {% trans "Количество" %}, {{ product.get_unit_display }}
+                            </label>
+                            {{ cart_product_form.quantity|add_class:"form-control" }}
+                        </div>
+                        {{ cart_product_form.override }}
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">{% trans "Добавить в корзину" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Секция с отзывами ... #}
+    <div class="mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>{% trans "Отзывы о товаре" %} ({{ reviews.count }})</h3>
+            {% with avg_rating=product.average_rating|default:0 %}
+                {% if avg_rating > 0 %}
+                    <div>
+                        <span class="text-warning">
+                            {% for i in "12345" %}{% if forloop.counter <= avg_rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}{% endfor %}
+                        </span>
+                        <span class="text-muted fw-bold ms-1">{{ avg_rating|floatformat:1 }} / 5.0</span>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+        {% if user.is_authenticated %}
+            {% if not user_has_reviewed %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">{% trans "Оставить свой отзыв" %}</h4>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="{{ review_form.rating.id_for_label }}" class="form-label">{{ review_form.rating.label }}</label>
+                                {{ review_form.rating|add_class:"form-range" }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ review_form.text.id_for_label }}" class="form-label">{{ review_form.text.label }}</label>
+                                {{ review_form.text }}
+                            </div>
+                            <button type="submit" name="submit_review" class="btn btn-primary">{% trans "Отправить отзыв" %}</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <p class="alert alert-info">{% trans "Вы уже оставили отзыв на этот товар." %}</p>
+            {% endif %}
+        {% else %}
+            <p class="alert alert-light">{% blocktrans %}Чтобы оставить отзыв, пожалуйста, <a href="{{ login_url }}?next={{ request.path }}">войдите</a> на сайт.{% endblocktrans %}</p>
+        {% endif %}
+        {% for review in reviews %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="mb-1">
+                        <strong>{{ review.user.username }}</strong>
+                        <span class="text-muted ms-2">
+                            {% for i in "12345" %}{% if forloop.counter <= review.rating %}<i class="fas fa-star text-warning"></i>{% else %}<i class="far fa-star text-warning"></i>{% endif %}{% endfor %}
+                        </span>
+                    </p>
+                    <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+                    <p class="card-text mt-2">{{ review.text|linebreaksbr }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <p>{% trans "Отзывов пока нет. Будьте первым!" %}</p>
+        {% endfor %}
+    </div>
+{% endblock %}

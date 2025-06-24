@@ -1,0 +1,9 @@
+# products/templates/robots.txt
+
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /order/checkout/
+Disallow: /accounts/
+
+Sitemap: https://yourdomain.com/sitemap.xml

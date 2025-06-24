@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты - Продукты из Деревни{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4 text-success">Свяжитесь со мной</h2>
+        <p class="lead">Вы можете заказать наши натуральные продукты, связавшись со мной любым удобным способом:</p>
+
+        <h3 class="mt-4">Телефон:</h3>
+        <p><a href="tel:+79XXXXXXXXX" class="link-primary fw-bold">+7 (9ХХ) ХХХ-ХХ-ХХ</a></p>
+
+        <h3 class="mt-3">Email:</h3>
+        <p><a href="mailto:your_email@example.com" class="link-primary fw-bold">your_email@example.com</a></p>
+
+        <h3 class="mt-3">Мессенджеры:</h3>
+        <ul class="list-unstyled"> {# Убираем стандартные маркеры списка #}
+            <li class="mb-2"><a href="https://wa.me/79XXXXXXXXX" target="_blank" class="btn btn-outline-success"><i class="fab fa-whatsapp"></i> WhatsApp</a></li> {# Потребуется Font Awesome для иконок #}
+            <li class="mb-2"><a href="https://t.me/your_telegram_username" target="_blank" class="btn btn-outline-info"><i class="fab fa-telegram-plane"></i> Telegram</a></li>
+            {# Можно добавить ссылки на Viber, VK, Instagram и т.д. #}
+        </ul>
+        <p class="mt-4 text-muted">Я готов(а) ответить на все ваши вопросы и принять заказ. С нетерпением жду ваших обращений!</p>
+    </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{% trans "Вход" %}{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center">{% trans "Вход на сайт" %}</h2>
+
+          {% if form.errors %}
+            <p class="alert alert-danger">{% trans "Ваше имя пользователя и пароль не совпали. Пожалуйста, попробуйте еще раз." %}</p>
+          {% endif %}
+
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                {{ form.username|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                {{ form.password|add_class:"form-control" }}
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">{% trans "Войти" %}</button>
+            </div>
+          </form>
+          <p class="text-center mt-3">
+            <a href="{% url 'password_reset' %}">{% trans "Забыли пароль?" %}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{% trans "Регистрация" %}{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center">{% trans "Регистрация нового пользователя" %}</h2>
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field|add_class:"form-control" }}
+                    {% if field.help_text %}
+                        <div class="form-text text-muted">{{ field.help_text|safe }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger p-2 mt-1">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">{% trans "Зарегистрироваться" %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

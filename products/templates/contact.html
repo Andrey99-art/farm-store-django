@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Контакты" %} - {% trans "Продукты из Деревни" %}{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4 text-success">{% trans "Свяжитесь со мной" %}</h2>
+        <p class="lead">{% trans "Вы можете заказать наши натуральные продукты, связавшись со мной любым удобным способом:" %}</p>
+
+        <!-- Телефон -->
+        <h3 class="mt-4">{% trans "Телефон" %}:</h3>
+        <p class="fs-5">
+            <strong>Оксана Николаевна</strong><br>
+            <a href="tel:+375297876719" class="link-primary fw-bold">+375 (29) 787-67-19</a>
+        </p>
+
+        <!-- Мессенджеры -->
+        <h3 class="mt-3">{% trans "Мессенджеры" %}:</h3>
+        <ul class="list-unstyled">
+            <li class="mb-2">
+                <a href="https://wa.me/375297876719" target="_blank" class="btn btn-outline-success">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="https://t.me/+375297876719" target="_blank" class="btn btn-outline-info">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </a>
+            </li>
+        </ul>
+        <p class="mt-4 text-muted">{% trans "Я готов(а) ответить на все ваши вопросы и принять заказ. С нетерпением жду ваших обращений!" %}</p>
+    </div>
+{% endblock %}

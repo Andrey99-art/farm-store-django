@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{% trans "Мои заказы" %}{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">{% trans "Мои заказы" %}</h2>
+
+  {% if orders %}
+    <div class="accordion" id="ordersAccordion">
+      {% for order in orders %}
+        <div class="accordion-item mb-3">
+          <h2 class="accordion-header" id="heading{{ order.id }}">
+            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ order.id }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ order.id }}">
+              <div class="d-flex justify-content-between w-100 me-3">
+                <span>{% blocktrans with order_id=order.id %}<strong>Order №{{ order_id }}</strong>{% endblocktrans %} from {{ order.created|date:"d.m.Y" }}</span>
+                <span class="badge {% if order.paid %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                  {% if order.paid %}{% trans "Оплачен" %}{% else %}{% trans "Ожидает оплаты" %}{% endif %}
+                </span>
+                <span class="fw-bold">{{ order.get_total_cost }} {% trans "руб." %}</span>
+              </div>
+            </button>
+          </h2>
+          <div id="collapse{{ order.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ order.id }}" data-bs-parent="#ordersAccordion">
+            <div class="accordion-body">
+              <p><strong>{% trans "Адрес доставки" %}:</strong> {{ order.postal_code }}, {{ order.city }}, {{ order.address }}</p>
+              <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>{% trans "Продукт" %}</th>
+                    <th class="text-center">{% trans "Количество" %}</th>
+                    <th class="text-end">{% trans "Цена" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in order.items.all %}
+                    <tr>
+                      <td>{{ item.product.name }}</td>
+                      <td class="text-center">{{ item.quantity }}</td>
+                      <td class="text-end">{{ item.price }} {% trans "руб." %}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info" role="alert">
+      {% blocktrans %}У вас пока нет ни одного заказа. <a href="{{ product_list_url }}" class="alert-link">Пора это исправить!</a>{% endblocktrans %}
+    </div>
+  {% endif %}
+{% endblock %}

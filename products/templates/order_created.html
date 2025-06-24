@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block seo_title %}{% trans "Заказ Оформлен" %} - {% trans "Продукты из Деревни" %}{% endblock %}
+
+{% block content %}
+    <div class="card shadow-lg p-5 text-center">
+        <h2 class="text-success mb-4 display-4">{% trans "Заказ успешно оформлен!" %}</h2>
+        <p class="lead mb-3">{% trans "Спасибо за ваш заказ!" %}</p>
+        {% if order %}
+            <p class="fs-5 mb-2">{% trans "Ваш номер заказа" %}: <strong class="text-primary">№{{ order.id }}</strong></p>
+            <p class="fs-5 mb-4">{% trans "Общая сумма заказа" %}: <strong class="text-success">{{ order.get_total_cost|floatformat:2 }} {% trans "руб." %}</strong></p>
+        {% else %}
+            <p class="fs-5 mb-4">{% trans "Ваш заказ принят." %}</p>
+        {% endif %}
+        <p class="text-muted mb-5">{% trans "Я свяжусь с вами в ближайшее время для уточнения деталей, способов оплаты и организации доставки." %}</p>
+        <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg">{% trans "Продолжить покупки" %}</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новый Заказ</title>
+    <style>
+        /* Инлайн-стили очень важны для email, так как многие почтовые клиенты
+           удаляют стили из тегов <style> или внешних CSS-файлов. */
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; }
+        h2 { color: #28a745; }
+        h3 { color: #007bff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .total { font-weight: bold; color: #28a745; }
+        .footer { margin-top: 20px; font-size: 0.9em; color: #666; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
+        <h2 style="color: #28a745;">Здравствуйте!</h2>
+        <p>На вашем сайте "Продукты из Деревни" был оформлен новый заказ.</p>
+        <p><strong>Номер заказа:</strong> {{ order.id }}</p>
+        <p><strong>Дата заказа:</strong> {{ order.created|date:"d.m.Y H:i" }}</p>
+
+        <h3 style="color: #007bff;">Данные клиента:</h3>
+        <ul style="list-style-type: none; padding: 0;">
+            <li style="margin-bottom: 5px;">Имя: {{ order.first_name }}</li>
+            <li style="margin-bottom: 5px;">Фамилия: {{ order.last_name }}</li>
+            <li style="margin-bottom: 5px;">Email: <a href="mailto:{{ order.email }}" style="color: #007bff; text-decoration: none;">{{ order.email }}</a></li>
+            {% if order.phone %}<li style="margin-bottom: 5px;">Телефон: {{ order.phone }}</li>{% endif %}
+            <li style="margin-bottom: 5px;">Адрес: {{ order.postal_code }}, {{ order.city }}, {{ order.address }}</li>
+        </ul>
+
+        <h3 style="color: #007bff;">Состав заказа:</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left; background-color: #f2f2f2;">Продукт</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left; background-color: #f2f2f2;">Количество</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left; background-color: #f2f2f2;">Цена за ед.</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left; background-color: #f2f2f2;">Всего</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ item.product.name }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ item.quantity }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ item.price }} руб.</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ item.get_cost }} руб.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right; border: 1px solid #ddd; padding: 8px;" class="total">Общая сумма:</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;" class="total">{{ order.get_total_cost }} руб.</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <p style="margin-top: 20px;">
+            Вы можете просмотреть детали заказа в админ-панели: <br>
+            <a href="http://127.0.0.1:8000/admin/products/order/{{ order.id }}/change/" style="color: #007bff; text-decoration: none;">Перейти к заказу №{{ order.id }}</a>
+        </p>
+
+        <div class="footer" style="margin-top: 20px; font-size: 0.9em; color: #666;">
+            <p>С уважением,<br>Администрация сайта "Продукты из Деревни"</p>
+        </div>
+    </div>
+</body>
+</html>

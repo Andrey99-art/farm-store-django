@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block seo_title %}{% trans "Каталог продуктов" %} - {% trans "Продукты из Деревни" %}{% endblock %}
+{% block seo_description %}{% trans "Ознакомьтесь с нашим ассортиментом свежих деревенских продуктов. Всегда в наличии натуральное огурцы, ягоды, лук и многое другое." %}{% endblock %}
+
+
+{% block content %}
+    <h2 class="mb-4">{% trans "Наши Продукты" %}</h2>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card product-card h-100 shadow-sm">
+                    <a href="{% url 'products:product_detail' pk=product.pk %}" class="text-decoration-none text-dark">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x300?text={% trans 'Нет фото' %}" class="card-img-top" alt="{% trans 'Нет фото' %}">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+
+                            <!-- ИСПРАВЛЕННЫЙ Блок отображения рейтинга -->
+                            {% with avg_rating=product.average_rating|default:0 reviews_count=product.reviews.count %}
+                                <div class="mb-2">
+                                    {% if reviews_count > 0 %}
+                                        <span class="text-warning">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= avg_rating %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <span class="text-muted small ms-1">({{ avg_rating|floatformat:1 }} / {{ reviews_count }})</span>
+                                    {% else %}
+                                        <span class="text-muted small">{% trans "Нет отзывов" %}</span>
+                                    {% endif %}
+                                </div>
+                            {% endwith %}
+                            <!-- Конец блока рейтинга -->
+
+                            <div class="mt-auto">
+                                {% if product.price %}
+                                    <p class="card-text fs-5 fw-bold">
+                                        {{ product.price }} {% trans "руб." %}
+                                    </p>
+                                {% else %}
+                                    <p class="card-text text-primary">
+                                        {% trans "Цену уточняйте при заказе" %}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="alert alert-info">{% trans "Пока нет доступных продуктов." %}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

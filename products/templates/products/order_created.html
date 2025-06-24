@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ Оформлен - Продукты из Деревни{% endblock %}
+
+{% block content %}
+    <div class="card shadow-lg p-5 text-center"> {# shadow-lg для сильной тени #}
+        <h2 class="text-success mb-4 display-4">Заказ успешно оформлен!</h2> {# display-4 для крупного заголовка #}
+        <p class="lead mb-3">Спасибо за ваш заказ!</p> {# lead для выделенного текста #}
+        {% if order %}
+            <p class="fs-5 mb-2">Ваш номер заказа: <strong class="text-primary">№{{ order.id }}</strong></p>
+            <p class="fs-5 mb-4">Общая сумма заказа: <strong class="text-success">{{ order.get_total_cost }} руб.</strong></p>
+        {% else %}
+            <p class="fs-5 mb-4">Ваш заказ принят.</p>
+        {% endif %}
+        <p class="text-muted mb-5">Я свяжусь с вами в ближайшее время для уточнения деталей, способов оплаты и организации доставки.</p>
+
+        <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg">Продолжить покупки</a>
+    </div>
+{% endblock %}
