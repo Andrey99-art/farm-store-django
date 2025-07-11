@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+*.venv
+env/
+venv.bak
+env.bak
+
+# Database
+*.sqlite3
+*.sqlite3-journal
+
+# Django
+*.log
+local_settings.py
+
+# Static and Media files
+/media/
+/staticfiles/
+
+# IDE / Editor specific
+.idea/
+.vscode/
+*.swp
