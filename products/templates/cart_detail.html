@@ -12,18 +12,18 @@
             <table class="table table-bordered table-hover bg-white shadow-sm">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">{% trans "Продукт" %}</th>
+                        <th scope="col" style="width: 50%;">{% trans "Продукт" %}</th>
                         <th scope="col">{% trans "Изображение" %}</th>
                         <th scope="col" class="text-center">{% trans "Количество" %}</th>
-                        <th scope="col" class="text-end">{% trans "Цена за ед." %}</th>
-                        <th scope="col" class="text-end">{% trans "Всего" %}</th>
-                        <th scope="col"></th>
+                        <th scope="col"></th> {# Пустой заголовок для кнопки "Удалить" #}
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in cart %}
                         <tr>
-                            <td><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
+                            <td class="align-middle">
+                                <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+                            </td>
                             <td>
                                 {% if item.product.image %}
                                     <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail" style="width: 80px; height: 60px; object-fit: cover;">
@@ -31,12 +31,10 @@
                                     <img src="https://via.placeholder.com/80x60?text={% trans 'Нет фото' %}" alt="{% trans 'Нет фото' %}" class="img-thumbnail" style="width: 80px; height: 60px; object-fit: cover;">
                                 {% endif %}
                             </td>
-                            <td class="text-center">
+                            <td class="text-center align-middle">
                                 {{ item.quantity }} {{ item.product.get_unit_display }}
                             </td>
-                            <td class="text-end">{{ item.price }} {% trans "руб." %} / {{ item.product.get_unit_display }}</td>
-                            <td class="text-end">{{ item.total_price|floatformat:2 }} {% trans "руб." %}</td>
-                            <td class="text-center">
+                            <td class="text-center align-middle">
                                 <form action="{% url 'products:cart_remove' item.product.id %}" method="post">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm btn-danger">{% trans "Удалить" %}</button>
@@ -44,16 +42,12 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr class="fw-bold">
-                        <td colspan="4" class="text-end">{% trans "Итого" %}:</td>
-                        <td colspan="2" class="text-end text-success fs-5">{{ cart.get_total_price|floatformat:2 }} {% trans "руб." %}</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
         <div class="d-flex justify-content-between mt-4">
             <a href="{% url 'products:product_list' %}" class="btn btn-secondary">{% trans "Продолжить покупки" %}</a>
-            <a href="{% url 'products:order_checkout' %}" class="btn btn-success">{% trans "Оформить заказ" %}</a>
+            <a href="{% url 'products:order_checkout' %}" class="btn btn-success btn-lg">{% trans "Оформить заказ" %}</a>
         </div>
     {% else %}
         <p class="alert alert-info">{% trans "Ваша корзина пуста." %}</p>
